@@ -1,0 +1,44 @@
+# Requirements for AI-Based Child Safety System
+
+# Core dependencies
+pyserial==3.5
+opencv-python==4.8.1.78
+face-recognition==1.3.0
+numpy==1.24.3
+pywhatkit==5.4
+PyAutoGUI==0.9.54
+
+# Database
+pymongo>=4.6.0
+dnspython>=2.4.0
+
+# Configuration management
+python-dotenv==1.0.0
+
+# Additional dependencies for face_recognition
+dlib==19.24.2
+cmake==3.27.7
+
+# Note: Installation order matters for some packages
+# Install in this order:
+# 1. pip install cmake
+# 2. pip install dlib
+# 3. pip install face-recognition
+# 4. pip install -r requirements.txt (for the rest)
+
+# Raspberry Pi Hardware Specific (added for Pi controller)
+RPi.GPIO==0.7.1
+mfrc522==0.1.5
+spidev==3.6
+RPLCD==1.3.1
+smbus2==0.4.3
+
+# API and Dashboard
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+websockets>=11.0.3
+python-multipart>=0.0.6
+passlib>=1.7.4
+bcrypt<4.0
+pyjwt>=2.8.0

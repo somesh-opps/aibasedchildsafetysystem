@@ -1,0 +1,67 @@
+# ===================================
+# Security - Sensitive Files
+# ===================================
+# Never commit these files!
+*.json
+.env
+config.py
+
+# Service account keys (keep private, not needed for MongoDB)
+*-key.json
+*credentials*.json
+
+# ===================================
+# Python
+# ===================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# ===================================
+# IDE / Editor
+# ===================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ===================================
+# Project Specific
+# ===================================
+# Student data directory (images and private data)
+STUDENTS/
+students/
+
+# Output files
+attendance_log*.txt
+checkout_log*.txt
+*.log
+
+# Temporary files
+temp/
+tmp/
