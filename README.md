@@ -1,166 +1,286 @@
-<div align="center">
+# 🛡️ AI-BASED CHILD SAFETY SYSTEM
+> AI-powered child identification, attendance tracking, guardian verification and security monitoring platform.
 
-<img src="AI-Based%20Child%20Safety%20System.png" alt="AI-Based Child Safety System Icon" width="120" />
+This project is a comprehensive security system designed to protect children during drop-off and pickup times at educational institutions and daycares. 
 
-# 🛡️ AI-Based Child Safety System
+It unifies **Artificial Intelligence (Facial Recognition)** and **Internet of Things (RFID)** with a modern **FastAPI / MongoDB** cloud backend to create a zero-trust model for child handovers. The system autonomously identifies students, records their attendance immutably, and strictly enforces guardian verification during check-out. Administrators monitor real-time operational telemetry through a live WebSocket-driven React dashboard.
 
-> **Intelligent RFID & Facial Recognition for Child Safety**
+---
 
-![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
-![Arduino](https://img.shields.io/badge/Arduino-Compatible-00979D?style=for-the-badge&logo=arduino&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+## 📖 PROJECT OVERVIEW
+Traditional attendance and pickup mechanisms rely heavily on manual human recognition, paper logs, or easily cloned RFID cards. This project solves these vulnerabilities by strictly identifying the *child* (via non-transferable biometrics) and explicitly validating the *guardian* picking them up.
 
-<br/>
+By leveraging a centralized API architecture, the system prevents fragmented records, unauthorized pickups, and provides real-time awareness to facility administrators.
 
-An intelligent attendance and safety system that combines **RFID authorization**, **AI-powered facial recognition**, and **guardian verification** to ensure children's safety during check-in and check-out procedures. It keeps parents updated in real-time via WhatsApp and syncs logs securely to MongoDB Atlas.
+---
 
-</div>
+## 🎯 PROBLEM STATEMENT
+* **Manual attendance** is slow, error-prone, and lacks an auditable chain of custody.
+* **Child identification** using only ID cards is vulnerable to "buddy punching" or credential loss.
+* **Secure pickup** is difficult to enforce when staff rely on memory to verify authorized guardians.
+* **Fragmented records** between hardware logs and parent notification systems prevent real-time monitoring.
 
-<hr/>
+---
 
-## 📖 Detailed Project Overview
+## 💡 PROPOSED SOLUTION
+This project combines multiple modern technologies into a single, cohesive workflow:
+`AI Computer Vision + RFID IoT + Guardian Verification + FastAPI + MongoDB Atlas + WebSockets + React Dashboard`
 
-The **AI-Based Child Safety System** is a comprehensive solution designed to automate and secure the drop-off (check-in) and pick-up (check-out) processes for children at schools, daycare centers, or camps. By integrating hardware and AI-driven software components, the system creates a robust safety net that ensures only authorized individuals can drop off or pick up a child. 
+The system identifies a child via Face/RFID, processes the event in real-time through FastAPI, securely updates MongoDB, and broadcasts the event instantly to the administrative dashboard. 
 
-### ✨ Core Features & Workflow
+---
 
-1. **🔒 Two-Factor Authentication (RFID + AI Facial Recognition)**
-   - The process is initiated by a hardware trigger: scanning an authorized **RFID card** on an Arduino-connected reader.
-   - Once a valid card is detected, the system activates the camera to perform high-accuracy **Facial Recognition** using OpenCV and dlib. It verifies the identity of the student and, during check-out, can also verify the authorized guardian.
+## ✨ KEY FEATURES
 
-2. **📥 Intelligent Check-in Mode**
-   - The child's face is scanned upon arrival.
-   - The system matches the face against a secure local database of enrolled students.
-   - Upon successful recognition, the child is granted access, and attendance is marked instantly.
+### AI & Vision
+* **Face recognition:** 128-d metric learning via the `face_recognition` library.
+* **Face registration:** Deep-validated multi-part upload ensuring strictly one face per photo.
+* **OpenCV integration:** Capable of processing webcam frames dynamically.
 
-3. **📤 Secure Check-out Mode**
-   - This mode is designed to verify both the student and the authorized guardian picking them up.
-   - It ensures that a child cannot leave the premises with an unrecognized or unauthorized person, significantly mitigating the risk of unsafe handoffs.
+### Attendance
+* **Check-in / Check-out:** Chronological telemetry logged securely.
+* **Attendance history:** Queryable endpoints tracking historical presence.
 
-4. **☁️ Automated Cloud Logging (MongoDB Atlas)**
-   - All check-in and check-out events are logged in real-time directly to **MongoDB Atlas**.
-   - This provides administrators with a live, centralized, and secure digital attendance register, eliminating manual paperwork.
+### Security
+* **Guardian verification:** Hard-gated mock verification step preventing unauthorized check-out.
+* **Event tracking:** Immutable `system_events` logging for security exceptions.
 
-5. **💬 Real-Time WhatsApp Notifications**
-   - The moment a child successfully checks in or checks out, an automated WhatsApp message is instantly dispatched to the parents' registered mobile numbers using `pywhatkit`.
-   - This provides parents with immediate peace of mind, knowing the exact status and location of their child.
+### Backend & Database
+* **FastAPI:** High-performance async REST APIs and WebSockets.
+* **Authentication:** Secure JWT generation with bcrypt password hashing.
+* **MongoDB Atlas:** Highly scalable cloud NoSQL persistence.
 
-6. **📟 Interactive Hardware Feedback**
-   - The software communicates continuously with the Arduino to provide real-time status updates (e.g., "Check-in Active", "Access Granted", "Unauthorized Card") on a connected LCD screen, guiding the user through the process.
+### Dashboard & Development
+* **Student management:** Centralized creation of students and guardians.
+* **Real-time updates:** WebSockets power a live event feed.
+* **Mock hardware mode:** 100% software simulation for hardware-less development.
 
-7. **🛡️ Data Security & Privacy**
-   - Sensitive configurations, MongoDB credentials, and RFID IDs are strictly isolated using environment variables (`.env`), ensuring no sensitive data is ever hardcoded or exposed in the repository.
+---
 
-<hr/>
+## 🏗️ SYSTEM ARCHITECTURE
 
-## 🚀 Quick Setup
+```mermaid
+flowchart TD
+    A[Camera / RFID] -->|Physical Input| B[Hardware Service]
+    Mock[Mock API Simulator] -->|Software Input| B
+    B --> C[FastAPI Layer]
+    
+    C <-->|Read / Write| D[(MongoDB Atlas)]
+    D -.->|DB Event Hook| E[WebSocket Broadcaster]
+    E -->|Live Update| F[React Dashboard]
+    C <-->|REST API| F
 
-### 1️⃣ Clone & Install Requirements
+    C --> G[Guardian Verification]
+    C --> H[Face Recognition Engine]
+```
+
+---
+
+## 🛠️ TECHNOLOGY STACK
+
+| Technology | Purpose |
+| ---------- | ------- |
+| **Python 3.9+** | Core backend language and AI orchestrator. |
+| **OpenCV (`cv2`)** | Capturing and processing vision frames. |
+| **`face_recognition`** | AI biometrics and facial encodings. |
+| **FastAPI** | High-performance asynchronous backend API. |
+| **MongoDB Atlas** | Persistent NoSQL cloud database. |
+| **React & TypeScript**| Manus-generated administrative dashboard frontend. |
+| **WebSockets** | Real-time event telemetry to the dashboard. |
+| **Arduino / MFRC522** | Hardware interface for physical RFID operations. |
+
+---
+
+## 🧠 HOW THE AI FACE RECOGNITION WORKS
+The system uses the `face_recognition` library (wrapping `dlib`'s state-of-the-art C++ models).
+1. **Camera/Image Acquisition:** Frames are captured via OpenCV (or uploaded via API).
+2. **Face Detection:** The system isolates the bounding box of the face.
+3. **Face Encoding:** The model projects the face into a 128-dimensional matrix.
+4. **Comparison:** Euclidean distance is calculated against all registered student encodings (TOLERANCE = 0.6).
+5. **Student Identification:** The closest match is resolved and returned to the business logic.
+
+---
+
+## 📝 REGISTRATION & ATTENDANCE WORKFLOW
+
+### 1. Student Registration
+`Student Info & Guardian Data` ➔ `Face Registration (Image Upload)` ➔ `Face Encoding` ➔ `MongoDB Storage`
+
+### 2. Check-In Workflow
+`Child Arrives` ➔ `Face / RFID Identification` ➔ `Duplicate Check` ➔ `Attendance Record Generated` ➔ `MongoDB Updated` ➔ `WebSocket Broadcast` ➔ `Dashboard Live Feed`
+
+### 3. Check-Out & Guardian Verification
+`Child Identified` ➔ `Guardian Verification Prompted` ➔ `Admin Verifies Guardian` ➔ `Authorization Granted` ➔ `Checkout Recorded`
+*(If unauthorized, the checkout is blocked and a `GUARDIAN_VERIFICATION_FAILED` security event is logged).*
+
+---
+
+## 🔌 RFID + HARDWARE (Physical Mode)
+When running with physical hardware, an Arduino microcontroller drives an MFRC522 RFID reader and a 16x2 I2C LCD. Python communicates via serial, issuing commands like `LCD:<MESSAGE>` and intercepting tags like `RFID:<CARD_ID>`.
+
+---
+
+## 💻 MOCK HARDWARE MODE (Software Simulation)
+This project features a robust **Mock Hardware Mode**, enabling full-stack development without physical devices.
+
+```env
+HARDWARE_MODE=mock
+```
+* **Why it exists:** Allows CI/CD, cloud deployment, and software iteration without Arduino/Webcam dependencies.
+* **How it works:** Real hardware calls (`cv2.VideoCapture` and PySerial) are elegantly bypassed. Instead, the `Demo & Simulation` panel in the dashboard hits `/api/system/mock/face/{id}` to inject synthetic but deterministic telemetry into the backend.
+
+---
+
+## 🌐 API REFERENCE
+
+| Method | Endpoint | Purpose |
+| ------ | -------- | ------- |
+| `POST` | `/api/auth/login` | Admin login |
+| `POST` | `/api/auth/logout` | Logout |
+| `GET`  | `/api/auth/me` | Current session |
+| `GET`  | `/api/students` | List students |
+| `POST` | `/api/students` | Create student |
+| `POST` | `/api/students/register-with-face`| Create student with biometrics |
+| `GET`  | `/api/attendance` | Attendance records |
+| `GET`  | `/api/dashboard/summary` | Dashboard statistics |
+| `POST` | `/api/system/checkin/start` | Start check-in mode |
+| `POST` | `/api/system/checkin/stop` | Stop check-in mode |
+| `POST` | `/api/system/checkout/start`| Start checkout mode |
+| `POST` | `/api/system/mock/face/{id}`| Simulate face recognition |
+| `POST` | `/api/system/mock/rfid/{id}`| Simulate RFID scan |
+| `WS`   | `/ws/events` | Real-time events |
+
+---
+
+## 🗄️ MONGODB DATABASE
+**Database:** `childdatadb`
+* **`students`**: Core demographic profiles and biometrics status.
+* **`guardians`**: N:1 relational mapping to students for pickup authorization.
+* **`attendance`**: Telemetry log of check-in and check-out events.
+* **`system_events`**: Immutable audit logs of hardware toggles and security exceptions.
+* **`admins`**: Secure JWT credentials.
+
+---
+
+## 🖥️ DASHBOARD & REAL-TIME EVENTS
+The React dashboard acts as the administrative command center. It communicates strictly with FastAPI, never accessing MongoDB directly. 
+
+**WebSocket Architecture:**
+`Database Update` ➔ `Event Creation` ➔ `WebSocket Broadcast` ➔ `Dashboard`
+The database abstraction explicitly guarantees that a WebSocket event is *only* fired if the MongoDB insertion strictly succeeds, ensuring 100% data consistency.
+
+---
+
+## 📁 PROJECT DIRECTORY
+```text
+AI-Based-Child-Safety-System/
+├── backend/
+│   ├── api/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── dependencies.py
+│   │   └── main.py
+│   ├── checkin.py
+│   ├── checkout.py
+│   └── database.py
+├── dashboard/
+│   └── client/
+├── hardware/
+├── STUDENTS/
+├── .env.example
+├── requirements.txt
+├── run_backend.sh
+└── run_dashboard.sh
+```
+
+---
+
+## ⚙️ INSTALLATION & SETUP
+
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/somesh-opps/AI-Based-Child-Safety-System.git
 cd AI-Based-Child-Safety-System
+```
 
-# Install core dependencies
-pip install cmake dlib face-recognition
+### 2. Python Environment & Backend
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Hardware & Cloud Setup
-- 🔌 **Arduino:** Upload the MFRC522 RFID sketch to your Arduino and connect it via USB.
-- ☁️ **Cloud Database:** Create a **MongoDB Atlas** cluster, get your connection URI, and ensure your IP is whitelisted.
-- 💬 **WhatsApp:** Make sure **WhatsApp Web** is logged in on your primary Chrome browser.
-
-### 3️⃣ Configure Environment
+### 3. Create First Admin
 ```bash
-cp .env.example .env
-```
-Open `.env` and fill in your details:
-- **Arduino COM port**
-- **Authorized RFID card IDs**
-- **MongoDB Atlas URI**
-- **Paths** to your `STUDENTS/` directory
-
-### 4️⃣ Prepare Student Data
-Create a folder structure for each student to hold their photos and their guardian's photos for recognition:
-```text
-STUDENTS/
-├── Student_Name/
-│   ├── photo1.jpg
-│   ├── phone.txt (Parent's WhatsApp number)
-│   └── guardian/
-│       └── mother.jpg
+python3 create_admin.py admin admin
 ```
 
-### 5️⃣ Start the System
+### 4. Run the Backend
 ```bash
-python -m hardware.main_rfid_control
+./run_backend.sh
 ```
-> *🎉 Your safety system is now live! Simply scan an RFID card to begin the check-in or check-out process.*
+*(Runs FastAPI on `http://localhost:8000`)*
 
-<hr/>
-
-## 🏗️ Project Architecture
-
-```text
-AI-Based-Child-Safety-System/
-│
-├── dashboard/
-│   └── Frontend dashboard (Coming Soon)
-│
-├── backend/
-│   └── Application logic, face recognition, MongoDB and services
-│
-├── hardware/
-│   └── RFID, Arduino, Raspberry Pi and hardware integration
-│
-├── .env                 # Secrets and Configuration (NOT committed)
-├── requirements.txt
-└── .gitignore
+### 5. Run the Dashboard
+```bash
+cd dashboard/client
+npm install
+npm run dev
 ```
 
-- **MongoDB Atlas** is the application's primary database for logging attendance and events.
-- **Hardware** logic is isolated from **Backend** business logic.
+---
 
-<hr/>
+## 🧪 SOFTWARE-ONLY DEMO PROCEDURE
+1. Start backend in `HARDWARE_MODE=mock`.
+2. Start the dashboard and log in with `admin`.
+3. Go to **Students** and create a test student (e.g., `STU-TEST`).
+4. Click **Demo & Simulation** in the sidebar.
+5. In the Command Center, click **Start Mode** for Check-in.
+6. In the Demo view, simulate a Face Recognition for `STU-TEST`.
+7. Watch the Live Feed instantly update via WebSockets.
+8. Stop Check-in, Start Check-out, and simulate Guardian Verification.
 
-## ⚙️ How It Works
+---
 
-<div align="center">
+## 🔒 SECURITY
+* **Authentication:** JWT (JSON Web Tokens) with `bcrypt` password hashing.
+* **Environment Variables:** Credentials like `MONGODB_URI` and `JWT_SECRET` are strictly kept in `.env` and never committed.
+* **Duplicate Protection:** Consecutive attendance events for the same student on the same day are aggressively rejected by the backend to prevent data pollution.
 
-```mermaid
-graph TD
-    A[🎴 RFID Scan] -->|Mode 1| B[📷 Student Face Check-in]
-    A -->|Mode 2| C[📷 Student + Guardian Check-out]
-    
-    B & C --> D{Face Recognized?}
-    
-    D -->|Yes| E[✅ Access Granted]
-    D -->|No| F[❌ Access Denied]
-    
-    E --> G[📊 Log to MongoDB Atlas]
-    E --> H[💬 WhatsApp Alert to Parent]
-    E --> I[🖥️ Display on LCD]
-    
-    style A fill:#00979D,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#3776AB,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#3776AB,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#F44336,stroke:#333,stroke-width:2px,color:#fff
-    style G fill:#95E1D3,stroke:#333,stroke-width:1px,color:#000
-    style H fill:#25D366,stroke:#333,stroke-width:1px,color:#fff
-```
+---
 
-</div>
+## 🚦 CURRENT STATUS
 
-<hr/>
+| Feature                   | Status |
+| ------------------------- | ------ |
+| FastAPI backend           | ✅ |
+| Manus dashboard           | ✅ |
+| MongoDB Atlas             | ✅ |
+| Face Recognition          | ✅ |
+| WebSockets                | ✅ |
+| Mock Hardware             | ✅ |
+| Guardian Verification     | 🟡 |
+| RFID                      | 🟡 |
+| Physical Hardware Testing | 🔵 |
+| Raspberry Pi Deployment   | 🔵 |
 
-## 📄 License
+*Legend: ✅ Implemented | 🟡 Partially Implemented / Mocked | 🔵 Future / Planned*
 
-This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
+---
 
-<br/>
+## 🚀 FUTURE SCOPE
+* **Raspberry Pi Deployment:** Migrate Python services onto physical edge hardware.
+* **Face Liveness Detection:** Implement IR/Depth sensing to prevent photograph spoofing.
+* **Push Notifications:** Integrate FCM or Twilio for mobile guardian alerts.
+* **Offline Edge Operation:** Local SQLite sync to ensure operation during network outages.
 
-<div align="center">
-<b>Made with ❤️ for Child Safety</b>
-</div>
+---
+
+## 📝 PRIVACY NOTE
+This system processes sensitive biometric and demographic information of children. It is engineered with security best practices, but organizations must deploy it in compliance with their local data protection regulations (e.g., GDPR, COPPA). Avoid exposing the API or database to the public internet without strict firewall rules.
+
+---
+
+## 👨‍💻 AUTHOR
+**Somesh Kumar Sahoo**  
+GitHub: [somesh-opps](https://github.com/somesh-opps)
